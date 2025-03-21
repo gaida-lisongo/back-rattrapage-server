@@ -1,7 +1,6 @@
 import { Router } from 'express';
 // import { ExamController } from '../controllers/examController';
 import { EpreuveModel } from '../models/EpreuveModel';
-import { parse } from 'path';
 
 const router = Router();
 const examModel = new EpreuveModel();
