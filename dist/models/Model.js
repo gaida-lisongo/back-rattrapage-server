@@ -19,17 +19,30 @@ class Model {
         // Check cache first
         try {
             const cached = await this.cache.getting(cacheKey);
-            if (cached.value) {
-                return JSON.parse(cached.value.toString());
+            if (cached && cached.value) {
+                try {
+                    return JSON.parse(cached.value.toString());
+                }
+                catch (parseError) {
+                    console.error('Cache parse error:', parseError);
+                    // Continue to database query if parse fails
+                }
             }
         }
         catch (error) {
             console.error('Cache error:', error);
+            // Continue to database query if cache fails
         }
-        // If not in cache, query database
+        // If not in cache or cache failed, query database
         const [rows] = await this.db.execute(query, params);
-        // Store in cache for future requests
-        await this.cache.setting(cacheKey, JSON.stringify(rows), { expires: 300 }); // 5 minutes cache
+        try {
+            // Store in cache for future requests
+            await this.cache.setting(cacheKey, JSON.stringify(rows), { expires: 300 }); // 5 minutes cache
+        }
+        catch (cacheError) {
+            console.error('Cache setting error:', cacheError);
+            // Continue even if cache setting fails
+        }
         return rows;
     }
     async response(data, status = true) {
