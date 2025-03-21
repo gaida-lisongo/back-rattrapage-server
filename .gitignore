@@ -1,15 +1,13 @@
 # Dependencies
 node_modules/
 yarn.lock
-package-lock.json
 
 # Environment
 .env
 .env.local
 .env.*.local
 
-# Build files
-dist/
+# Build filess
 build/
 *.tsbuildinfo
 
